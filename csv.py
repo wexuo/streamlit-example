@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-st.set_page_config(page_title="CSV去重工具", page_icon="🔧", layout="wide")
+st.set_page_config(page_title="CSV工具", page_icon="🔧", layout="wide")
 
 # 初始化 session state
 if 'main_df' not in st.session_state:
@@ -137,7 +137,7 @@ if st.session_state.main_df is not None:
                     removed_count = original_count - final_count
                     
                     # 显示结果
-                    st.success("✅ 去重完成！")
+                    st.success("✅ 去重完成")
                     
                     col_result_left, col_result_middle, col_result_right, col_result_extra = st.columns(4)
                     col_result_left.metric("原始记录数", original_count)
@@ -145,7 +145,7 @@ if st.session_state.main_df is not None:
                     col_result_right.metric("删除记录数", removed_count, delta=f"-{removed_count}")
                     col_result_extra.metric("重复方案占比", f"{removed_count/original_count*100:.2f}%")
                     
-                    st.write("**去重后数据预览：**")
+                    st.write("**数据预览：**")
                     st.dataframe(deduplicated_df.head(20), width='stretch')
                     
                     # 准备下载
@@ -154,28 +154,13 @@ if st.session_state.main_df is not None:
                     csv_buffer.seek(0)
                     
                     st.download_button(
-                        label="⬇️ 下载去重后的CSV文件",
+                        label="🗂️ 下载文件",
                         data=csv_buffer,
                         file_name=output_filename,
                         mime="text/csv",
                         type="primary",
                         width='stretch'
                     )
-                    
-                    # 显示详细统计
-                    with st.expander("📊 查看详细统计信息"):
-                        st.write("**去重配置：**")
-                        if dedup_mode == "单文件去重":
-                            st.write(f"- 去重模式: 单文件去重")
-                            st.write(f"- 去重字段: {main_selected_column}")
-                        else:
-                            st.write(f"- 去重模式: 双文件去重")
-                            st.write(f"- 文件1字段: {main_selected_column}")
-                            st.write(f"- 文件2字段: {', '.join(compare_selected_columns)}")
-                        
-                        st.write(f"- 保留策略: {'保留第一条' if keep_option == 'first' else '保留最后一条' if keep_option == 'last' else '删除所有重复'}")
-                        st.write(f"- 去重率: {removed_count/original_count*100:.2f}%")
-                        
                 except Exception as e:
                     st.error(f"❌ 去重过程出错: {str(e)}")
 
